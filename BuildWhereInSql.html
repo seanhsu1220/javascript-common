@@ -1,0 +1,95 @@
+<html>
+<head>
+	<title></title>
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+<script>
+$(document).ready(function(){
+	$('#createSQL').on("click", function(){
+		var tableName = $('#tableName').val();
+		var columns = $('#columns').val();
+		var whereKey = $('#whereKey').val();
+		var keyId = $('#keyId').val();
+		
+		
+		lines = keyId.split(/\n/);
+		var counter = 0;
+		var appendKeyId ='';
+		for(var i in lines){
+			counter++;
+			appendKeyId += lines[i]  + ',';	
+			if(counter == 1000 ||  i == lines.length-1){
+				appendKeyId = appendKeyId.substring(0, appendKeyId.length -1);
+				var div = document.createElement("div");
+				var sql = 'select '  +  columns + ' from ' + tableName  + ' where ' + whereKey + ' in(' + appendKeyId + ')';
+				div.innerHTML = "<h3>" + (parseInt(i) +1) + "</h3><textArea>" + sql + "</textArea>";
+				div.id= "div" + i;
+				$('#displaySql').append(div) 
+				$("#div" + i).addClass("col-sm-4");
+				appendKeyId = '';
+				counter=0;
+			}
+		}
+	});
+});
+</script>
+<div class="container">
+	<div class="jumbotron">
+		<h1>多組id組1000筆where in語法</h1>
+		<p>Ver1.0</p> 
+	 </div>
+	<div class="table-responsive" style="">
+	  <table class="table">
+		<tr>
+			<td>
+				表格名稱
+			</td>
+			<td>
+				<input id="tableName" value="">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				where key
+			</td>
+			<td>
+				<input id="whereKey" value="">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				欄位
+			</td>
+			<td>
+				<input id="columns" value="">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				ID
+			</td>
+			<td>
+				<textarea id="keyId"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<button id="createSQL" class="btn btn-default" type="button">送出</button>
+			</td>
+		</tr>
+	  </table>
+	</div>
+	 
+  <div id="displaySql" class="row">
+  </div>
+</div>
+</body>
+</html>
